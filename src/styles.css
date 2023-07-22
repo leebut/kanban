@@ -64,15 +64,6 @@ html {
   padding: 1rem;
   background: rgb(255, 255, 255);
 }
-.queue {
-  background: rgb(255, 190, 190);
-}
-.in-progress {
-  background: rgb(255, 255, 182);
-}
-.done {
-  background: rgb(180, 255, 180);
-}
 label {
   font-size: 1.5rem;
   margin: 0 0.5rem 0 1rem;
