@@ -134,7 +134,7 @@ function ToDo({ tasks, onHandleClickedTask, onHandleDeleteTask }) {
       <div>
         <h2 className="list-title">Job queue</h2>
 
-        {tasks.length === 0 && <h2>No orders</h2>}
+        {tasks.length === 0 && <h2>No Jobs</h2>}
         <ul className="kanban-card queue">
           {tasks.map((task) => (
             <TaskItem
