@@ -41,6 +41,12 @@ html {
   border-radius: 0.5rem;
   border: solid 2px black;
 }
+.in-progress {
+  background: rgb(255, 255, 149);
+}
+.done {
+  background: rgb(206, 245, 149);
+}
 .kanban-card__item {
   /* padding: 0.3rem; */
   border: solid 1px black;
@@ -117,4 +123,13 @@ textarea:focus {
 .btn:active {
   background: white;
   color: rgb(37, 53, 21);
+}
+
+.btn-delete {
+  background-color: brown;
+  color: rgb(255, 214, 214);
+}
+.btn-delete:hover {
+  background-color: rgb(255, 169, 169);
+  color: rgb(66, 10, 10);
 }

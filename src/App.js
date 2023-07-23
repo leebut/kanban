@@ -26,6 +26,8 @@ export default function App() {
   const [doingTask, setDoingTask] = useState([]);
   const [doneTask, setDoneTask] = useState([]);
 
+  // ----------------- H A N D L E  F U N C T I O N S -------------
+
   function handleAddJob(task) {
     console.log("ADD JOB");
 
@@ -46,15 +48,39 @@ export default function App() {
     setDoingTask(newTasks);
   }
 
+  function handleDeleteTask(curTask, condition) {
+    let cond = condition;
+
+    const toDeleteTaskList = tasks.filter((tasks) => curTask.id !== tasks.id);
+    const toDeleteDoingTasks = doingTask.filter(
+      (doingTasks) => curTask.id !== doingTasks.id
+    );
+    const toDeleteDoneTasks = doneTask.filter(
+      (doneTask) => curTask.id !== doneTask.id
+    );
+
+    cond === 1 && setTasks(toDeleteTaskList);
+    cond === 2 && setDoingTask(toDeleteDoingTasks);
+    cond === 3 && setDoneTask(toDeleteDoneTasks);
+  }
+  // ----------------------------------------------------------------
   return (
     <>
       <div className="header">
         <AddJob onHandleAddJob={handleAddJob} />
       </div>
       <div className="wrapper">
-        <ToDo tasks={tasks} onHandleClickedTask={handleClickedTask} />
-        <Doing doingTask={doingTask} onHandleDoneTask={handleDoneTask} />
-        <Done doneTask={doneTask} />
+        <ToDo
+          tasks={tasks}
+          onHandleClickedTask={handleClickedTask}
+          onHandleDeleteTask={handleDeleteTask}
+        />
+        <Doing
+          doingTask={doingTask}
+          onHandleDoneTask={handleDoneTask}
+          onHandleDeleteTask={handleDeleteTask}
+        />
+        <Done doneTask={doneTask} onHandleDeleteTask={handleDeleteTask} />
       </div>
     </>
   );
@@ -95,14 +121,14 @@ function AddJob({ onHandleAddJob }) {
           <label htmlFor="desc">Job Description</label>
           <textarea value={desc} onChange={(e) => setDesc(e.target.value)} />
 
-          <Button>Add New Job</Button>
+          <Button className="btn">Add New Job</Button>
         </form>
       </div>
     </>
   );
 }
 
-function ToDo({ tasks, onHandleClickedTask }) {
+function ToDo({ tasks, onHandleClickedTask, onHandleDeleteTask }) {
   return (
     <>
       <div>
@@ -115,6 +141,7 @@ function ToDo({ tasks, onHandleClickedTask }) {
               key={task.id}
               task={task}
               onHandleClickedTask={onHandleClickedTask}
+              onHandleDeleteTask={onHandleDeleteTask}
             />
           ))}
         </ul>
@@ -123,15 +150,26 @@ function ToDo({ tasks, onHandleClickedTask }) {
   );
 }
 
-function TaskItem({ task, onHandleClickedTask }) {
+function TaskItem({ task, onHandleClickedTask, onHandleDeleteTask }) {
   return (
     <KanBanCardItem task={task}>
-      <Button onClick={() => onHandleClickedTask(task)}>Start Job</Button>
+      <Button className="btn" onClick={() => onHandleClickedTask(task)}>
+        Start Job
+      </Button>
+      <Button
+        className="btn btn-delete"
+        onClick={() => {
+          // (1);
+          onHandleDeleteTask(task, 1);
+        }}
+      >
+        Delete Job
+      </Button>
     </KanBanCardItem>
   );
 }
 
-function Doing({ doingTask, onHandleDoneTask }) {
+function Doing({ doingTask, onHandleDoneTask, onHandleDeleteTask }) {
   return (
     <>
       <div>
@@ -143,6 +181,7 @@ function Doing({ doingTask, onHandleDoneTask }) {
               key={task.id}
               task={task}
               onHandleDoneTask={onHandleDoneTask}
+              onHandleDeleteTask={onHandleDeleteTask}
             />
           ))}
         </ul>
@@ -150,15 +189,25 @@ function Doing({ doingTask, onHandleDoneTask }) {
     </>
   );
 }
-function DoingTaskItem({ task, onHandleDoneTask }) {
+function DoingTaskItem({ task, onHandleDoneTask, onHandleDeleteTask }) {
   return (
     <KanBanCardItem task={task}>
-      <Button onClick={() => onHandleDoneTask(task)}>Complete Task</Button>
+      <Button className="btn" onClick={() => onHandleDoneTask(task)}>
+        Complete Task
+      </Button>
+      <Button
+        className="btn btn-delete"
+        onClick={() => {
+          onHandleDeleteTask(task, 2);
+        }}
+      >
+        Delete Job
+      </Button>
     </KanBanCardItem>
   );
 }
 
-function Done({ doneTask }) {
+function Done({ doneTask, onHandleDeleteTask }) {
   return (
     <>
       <div>
@@ -166,7 +215,11 @@ function Done({ doneTask }) {
         {doneTask.length === 0 && <h2>No jobs</h2>}
         <ul className="kanban-card done">
           {doneTask.map((task) => (
-            <DoneTaskItem key={task.id} task={task} />
+            <DoneTaskItem
+              key={task.id}
+              task={task}
+              onHandleDeleteTask={onHandleDeleteTask}
+            />
           ))}
         </ul>
       </div>
@@ -174,14 +227,28 @@ function Done({ doneTask }) {
   );
 }
 
-function DoneTaskItem({ task }) {
-  return <KanBanCardItem task={task} />;
-}
-
-function Button({ children, onClick }) {
+function DoneTaskItem({ task, onHandleDeleteTask }) {
   return (
     <>
-      <button className="btn" onClick={onClick}>
+      <KanBanCardItem task={task}>
+        <Button
+          className="btn btn-delete"
+          onClick={() => {
+            onHandleDeleteTask(task, 3);
+          }}
+        >
+          Delete Job
+        </Button>
+      </KanBanCardItem>
+    </>
+  );
+}
+
+function Button({ children, onClick, className }) {
+  return (
+    <>
+      {/* <button className="btn" onClick={onClick}> */}
+      <button className={className} onClick={onClick}>
         {children}
       </button>
     </>
@@ -192,7 +259,7 @@ function KanBanCardItem({ task, children }) {
   return (
     <>
       <li className="kanban-card__item">
-        <p className="kanban-card__heading">Title: {task.title}</p>
+        <p className="kanban-card__heading">{task.title}</p>
         <div className="kanban-card__body">
           <p>{task.desc}</p>
           {children}
